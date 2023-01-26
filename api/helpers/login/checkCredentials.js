@@ -11,7 +11,7 @@ const check = (req, login) => {
         )) {
         return false;
     } else if (login === false) {
-        if (req.body.username.length < 1 || req.body.username.length > 10) {
+        if (req.body.username.length < 1 || req.body.username.length > 16) {
             return false;
         }
     }

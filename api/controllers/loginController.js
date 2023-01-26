@@ -15,12 +15,13 @@ const login = async (req, res) => {
     if (!user) {
         return res.status(200).send({ 'msg': 'Wrong password or username' });
     }
+    console.log(user.rows[0].hasportfolio);
     const pwdComparisonResult = comparePasswords.compare(req.body.password, user.rows[0].password);
     if (!pwdComparisonResult) {
         return res.status(200).send({ 'msg': 'Wrong password or username' });
     }
     const accessToken = await singJwt.sign(user.rows[0].username, user.rows[0].email);
-    return res.status(200).cookie('jwt', accessToken, { secure: false, httpOnly: true, expires: dayjs().add(1, "days").toDate() }).send({ 'msg': user.rows[0].username });
+    return res.status(200).cookie('jwt', accessToken, { secure: false, httpOnly: true, expires: dayjs().add(1, "days").toDate() }).cookie('hasPortfolio', user.rows[0].hasportfolio, { secure: false, httpOnly: false, expires: dayjs().add(1, "days").toDate() }).send({ 'msg': user.rows[0].username });
 }
 
 module.exports = { login };

@@ -1,5 +1,5 @@
 
-const format = async (arrayOfTokens, transactions, aum, changeTotal) => {
+const format = async (portfolioData, arrayOfTokens, transactions, aum, changeTotal, presignedUrls, historicalPortfolioValue, rank) => {
 
     // support data for formatting data
     const currencyFractionDigits = new Intl.NumberFormat('en-US', {
@@ -37,14 +37,17 @@ const format = async (arrayOfTokens, transactions, aum, changeTotal) => {
         });
     }
 
-    const formattedAum = aum.toLocaleString("en-US", { style: "currency", currency: "USD" });
+    const formattedAum = historicalPortfolioValue[historicalPortfolioValue.length - 1].y.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
     const decimalPlaces = 2;
     const sign = Math.sign(changeTotal) === -1 ? "-" : "+";
-    const formattedChangeTotal = `${sign}${Math.abs(changeTotal * 100).toFixed(2)}%`; // TODO: fix this line to show the correct percentage
+    const formattedChangeTotal = `${sign}${Math.abs(changeTotal * 100).toFixed(2)}%`;
 
+    // get y from last element of historicalPortfolioValue
+    const y = historicalPortfolioValue[historicalPortfolioValue.length - 1].y;
 
-    return { portfolio: arrayOfTokens, aum: formattedAum, changeTotal: formattedChangeTotal, transactions: transactions };
+    return { portfolioData: portfolioData, portfolio: arrayOfTokens, aum: formattedAum, changeTotal: formattedChangeTotal, transactions: transactions, icon: presignedUrls[0], historicalPortfolioValue: historicalPortfolioValue, rank: rank };
 }
+
 
 module.exports = { format };

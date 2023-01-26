@@ -9,7 +9,6 @@ const portfolioRoute = require('./routes/portfolioRoute.js');
 const cors = require('cors');
 
 
-
 // configuration
 dotenv.config();
 
@@ -28,17 +27,16 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(express.json());
+
+app.use(express.json({ limit: '5mb' }));
 app.use(cookieParser());
 app.use('*/closed', verifyJwt.isVerified);
+
 
 // routes
 app.use("/api/auth", authRoute);
 app.use("/api/portfolio", portfolioRoute);
 // app.use("/api/test", testRoute);
-
-
-
 
 
 app.listen(5000, () => {
