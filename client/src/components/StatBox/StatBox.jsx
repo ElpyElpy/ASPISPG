@@ -49,7 +49,7 @@ const StatBox = ({ title, subtitle, icon, change }) => {
                     {subtitle}
                 </Typography>
             </Box>
-        </Box>
+        </Box >
     );
 };
 

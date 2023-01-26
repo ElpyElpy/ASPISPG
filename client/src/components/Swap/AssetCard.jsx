@@ -9,7 +9,7 @@ import ModalDialogTokens from "./ModalDialogTokens";
 
 
 
-const AssetCard = ({ buy, tokenInfo, onSelectValue, onSelectToken, onSelectQuantity, unavailableAsset, coins }) => {
+const AssetCard = ({ buy, tokenInfo, onSelectValue, onSelectToken, onSelectQuantity, unavailableAsset, coins, width }) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -65,20 +65,19 @@ const AssetCard = ({ buy, tokenInfo, onSelectValue, onSelectToken, onSelectQuant
         };
     }, [quantity, tokenFromParent, unavailableAsset])
 
-    const handleChange = (e) => {
+    const handleChange = (value) => {
         // setQuantity(e.target.value);
         const regex = /^\d*\.?\d{0,4}$/; //    /^\d*\.?\d*$/
-        if (e.target.value == "" || regex.test(e.target.value)) {
+        if (value == "" || regex.test(value)) {
             if (!buy) {
                 let currentTokenTicker = tokenFromParent ? tokenFromParent.Symbol : tokenInfo.ticker;
                 let currentToken = coins.find((coin) => coin.ticker === currentTokenTicker);
-                if (e.target.value <= parseFloat(currentToken.quantity.replace(/,/g, ''))) {
-                    setQuantity(e.target.value);
+                if (value <= parseFloat(currentToken.quantity.replace(/,/g, ''))) {
+                    setQuantity(value);
                 }
             } else {
-                setQuantity(e.target.value);
+                setQuantity(value);
             }
-
         }
     };
 
@@ -88,26 +87,45 @@ const AssetCard = ({ buy, tokenInfo, onSelectValue, onSelectToken, onSelectQuant
         setQuantity(currentChoosenTokenValueString)
     }
 
+    const formatInput = (value) => {
+        if (value === "") {
+            return "";
+        } else {
+            var parts = value.split(".");
+            var thousands = /\B(?=(\d{3})+(?!\d))/g;
+            if (parts.length > 1 && parts[1].length !== '') {
+                var numberPart = parts[0];
+                var decimalPart = parts[1];
+
+                return numberPart.replace(thousands, ",") + "." + decimalPart;
+            } else {
+                return value.replace(thousands, ",");
+            }
+        }
+    }
+
+
+
 
     return (
         <Box width="100%" marginBottom="10px" marginTop="10px" marginLeft="50px" marginRight="50px" backgroundColor={colors.primary[600]} borderRadius="20px">
             <Box display="flex" marginTop="10px">
-                <Grid container direction="row" alignItems="center" justifyContent="space-between" p="0px 20px 10px 5px">
+                <Grid container direction="row" alignItems="center" justifyContent="space-between" p={width <= 500 ? "0px 20px 0px 5px" : "0px 20px 10px 5px"}>
                     <Typography
-                        variant="h6"
+                        variant={width <= 500 ? "subtitle2" : "h6"}
                         sx={{ color: colors.grey[300], marginLeft: "10px" }}
                     >
                         You {buy ? "Buy" : 'Sell'}
                     </Typography>
                     {!buy && <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         {unavailableAsset && !buy && <Typography
-                            variant="h6"
+                            variant={width <= 500 ? "subtitle2" : "h6"}
                             sx={{ color: colors.redAccent[500], marginLeft: "10px" }}
                         >
                             Insufficient balance
                         </Typography>}
                         <Button sx={{
-                            backgroundColor: colors.primary[400], color: colors.grey[100], fontSize: "10px", borderRadius: '15px', borderColor: colors.grey[100], marginLeft: '10px', padding: '8px 15px 7px 15px',
+                            backgroundColor: colors.primary[400], color: colors.grey[100], fontSize: width <= 500 ? "8px" : "10px", borderRadius: '15px', borderColor: colors.grey[100], marginLeft: '10px', padding: width <= 500 ? '6px 12px 5px 12px' : '8px 15px 7px 15px',
                             '&:hover': {
                                 backgroundColor: colors.primary[500],
                             }
@@ -117,8 +135,8 @@ const AssetCard = ({ buy, tokenInfo, onSelectValue, onSelectToken, onSelectQuant
                 </Grid>
             </Box >
             <Grid container direction="row" alignItems="center" justifyContent="space-between" p="0 10px 0 10px" >
-                <Button sx={{ color: colors.grey[100], fontSize: "26px" }} startIcon={<TokenIcon svgpath={tokenFromParent ? tokenFromParent.svg_path : tokenInfo.svgpath} />} endIcon={<ArrowDropDownIcon />} onClick={handleOpen}>{tokenFromParent ? tokenFromParent.Symbol : tokenTicker}</Button>
-                <TextField disabled={unavailableAsset && !buy} type="text" inputProps={{ style: { textAlign: 'end', fontSize: '26px' } }} value={quantity} onChange={(e) => handleChange(e)} onWheel={event => { event.preventDefault(); }} // the change is here
+                <Button sx={{ color: colors.grey[100], fontSize: width <= 500 ? "20px" : "26px" }} startIcon={<TokenIcon svgpath={tokenFromParent ? tokenFromParent.svg_path : tokenInfo.svgpath} />} endIcon={<ArrowDropDownIcon />} onClick={handleOpen}>{tokenFromParent ? tokenFromParent.Symbol : tokenTicker}</Button>
+                <TextField disabled={unavailableAsset && !buy} type="text" inputProps={{ style: { textAlign: 'end', fontSize: width <= 500 ? "20px" : "26px" } }} value={formatInput(quantity)} onChange={(e) => handleChange(e.target.value.replace(',', ''))} onWheel={event => { event.preventDefault(); }} // the change is here
                     sx={{
                         width: '50%',
                         '& label.Mui-focused': {
@@ -151,13 +169,13 @@ const AssetCard = ({ buy, tokenInfo, onSelectValue, onSelectToken, onSelectQuant
             <Box display="flex">
                 <Grid container direction="row" alignItems="center" justifyContent="space-between" p="0px 20px 10px 5px">
                     <Typography
-                        variant="h6"
+                        variant={width <= 500 ? "subtitle2" : "h6"}
                         sx={{ color: colors.grey[300], marginLeft: "10px" }}
                     >
                         {tokenFromParent ? tokenFromParent.CoinName : tokenName}
                     </Typography>
                     <Typography
-                        variant="h6"
+                        variant={width <= 500 ? "subtitle2" : "h6"}
                         sx={{ color: colors.grey[300], marginLeft: "10px" }}
                     >
                         {usdValue}

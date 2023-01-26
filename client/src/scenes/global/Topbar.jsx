@@ -1,12 +1,13 @@
-import { Box, Button, useTheme, Menu, MenuItem } from '@mui/material';
+import { Box, Button, useTheme, Menu, MenuItem, IconButton } from '@mui/material';
 import { useContext, useState, useEffect } from 'react';
 import { ColorModeContext, tokens } from '../../theme';
 import ModalDialog from '../../components/Authorization/ModalDialog';
 import Cookies from 'js-cookie';
 import axios from "axios";
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import { useNavigate } from 'react-router-dom';
 
-const Topbar = () => {
+const Topbar = ({ onReceiveOpenMobileMenu }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
@@ -14,6 +15,8 @@ const Topbar = () => {
 
     const [open, setOpen] = useState(false) // state for Oauth modal form
     const [userName, setUserName] = useState("") // state for login / logout button
+    const [width, setWidth] = useState(window.innerWidth);
+    const [openMobileMenu, setOpenMobileMenu] = useState(false);
 
     const handleOpen = () => {
         setOpen(true)
@@ -48,6 +51,8 @@ const Topbar = () => {
 
 
     useEffect(() => {
+        setWidth(window.innerWidth);
+        onReceiveOpenMobileMenu(openMobileMenu);
         function loadUserData() {
             const data = Cookies.get('user');
             if (data !== null) {
@@ -83,11 +88,11 @@ const Topbar = () => {
             <Box display="flex">
                 {userName === undefined && <Button
                     sx={{
-                        backgroundColor: colors.greenAccent[600],
+                        backgroundColor: colors.greenAccent[700],
                         color: colors.grey[100],
-                        fontSize: "12px",
+                        fontSize: width <= 820 ? '10px' : "12px",
                         fontWeight: "bold",
-                        padding: "0px 35px",
+                        padding: width <= 820 ? "0px 10px" : "0px 35px",
                         marginLeft: '15px',
                     }}
                     onClick={handleOpen}
@@ -96,14 +101,15 @@ const Topbar = () => {
                 </Button>}
                 {userName !== undefined && <Button
                     sx={{
-
                         color: colors.grey[100],
                         borderRadius: '15px',
-                        fontSize: "12px",
+                        fontSize: width <= 820 ? '10px' : "12px",
                         fontWeight: "bold",
                         borderWidth: '1px',
-                        padding: "0px 35px",
+                        padding: width <= 820 ? "0px 10px" : "0px 35px",
                         marginLeft: '15px',
+                        background: `linear-gradient(135deg, ${colors.primary[500]} 30%, ${colors.primary[700]} 90%)`,
+                        borderColor: colors.grey[200],
                     }}
                     id="basic-demo-button"
                     aria-controls={expand ? 'basic-menu' : undefined}
@@ -115,6 +121,9 @@ const Topbar = () => {
                 >
                     {userName}
                 </Button>}
+                {width <= 820 && <IconButton aria-label="delete" sx={{ ml: '20px' }} onClick={() => setOpenMobileMenu(!openMobileMenu)}>
+                    <MenuOutlinedIcon />
+                </IconButton>}
                 <Menu
                     id="basic-menu"
                     anchorEl={anchorEl}
@@ -126,7 +135,7 @@ const Topbar = () => {
                 </Menu>
             </Box>
             <ModalDialog open={open} handleClose={handleClose} />
-        </Box>
+        </Box >
     )
 }
 

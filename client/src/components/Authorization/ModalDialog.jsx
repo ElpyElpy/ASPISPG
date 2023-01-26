@@ -13,7 +13,8 @@ const ModalDialog = ({ open = false, handleClose }) => {
         <Dialog open={open} onClose={handleClose} sx={{
             "& .MuiPaper-root": {
                 borderRadius: "50px"
-            }
+            },
+            backgroundColor: "rgba(28, 29, 39, 0.9)"
         }}>
             <Form handleClose={handleClose} />
         </Dialog>

@@ -10,11 +10,6 @@ async function sellTokens(sendToken, buyTokenName, buyToken, sendTokenAmount) {
         sendTokenAmount: sendTokenAmount
     }
 
-    console.log(sendToken);
-    console.log(buyTokenName)
-    console.log(buyToken);
-    console.log(sendTokenAmount);
-
 
     return await axios.post('/portfolio/closed/quote', { quote }, {
         withCredentials: true

@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
+import MilitaryTechOutlinedIcon from '@mui/icons-material/MilitaryTechOutlined';
+import WorkspacesOutlinedIcon from '@mui/icons-material/WorkspacesOutlined';
+import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
+import NewReleasesOutlinedIcon from '@mui/icons-material/NewReleasesOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useLocation } from 'react-router-dom';
 
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, icon, selected, setSelected, ext = false, onReceiveSetMobileMenu }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     return (
@@ -25,139 +24,221 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
             style={{
                 color: colors.grey[100],
             }}
-            onClick={() => setSelected(title)}
+            onClick={() => {
+                setSelected(title)
+                onReceiveSetMobileMenu(false)
+            }}
             icon={icon}
         >
             <Typography>{title}</Typography>
-            <Link to={to} />
+            {ext ? <a href={ext} target='_blank'></a> : <Link to={to} />}
+
         </MenuItem>
     );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ receiveCollapsed, openMobileMenu }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [selected, setSelected] = useState("Dashboard");
+    const [selected, setSelected] = useState("All portfolios");
+    const [width, setWidth] = useState(window.innerWidth);
+    const [mobileOpen, setMobileOpen] = useState(true);
 
     const location = useLocation();
 
     useEffect(() => {
+        setMobileOpen(!mobileOpen);
+
+    }, [openMobileMenu])
+
+    useEffect(() => {
+
+        setWidth(window.innerWidth);
+        if (width <= 820) {
+            setIsCollapsed(true);
+        }
+
         if (location.pathname === '/') {
-            setSelected("Home");
+            setSelected("All portfolios");
         } else if (location.pathname === '/portfolio') {
             setSelected("Your portfolio");
         }
-    })
+        receiveCollapsed(isCollapsed);
+    }, [width, selected, isCollapsed, mobileOpen])
+
+
+    const hangleSetMobileMenu = (status) => {
+        setMobileOpen(status)
+    }
+
 
     return (
-        <Box
+        (width > 820 || mobileOpen) && <Box
             sx={{
                 "& .pro-sidebar-inner": {
-                    background: `${colors.primary[600]} !important`,
+                    background: `linear-gradient(90deg, ${colors.primary[700]} 10%, ${colors.primary[800]} 90%)`,
                     borderRadius: '10px',
+                    // height: "100vh",
+                    width: mobileOpen ? '100%' : 'none', /////////// comment to prod
+                    position: (isCollapsed && !mobileOpen) ? "relative" : "fixed",
+                    // top: "0",
                 },
                 "& .pro-icon-wrapper": {
                     backgroundColor: `transparent !important`,
                 },
                 "& .pro-inner-item": {
-                    padding: "5px 5px 15px 15px !important",
+                    padding: "5px 35px 5px 20px !important",
                 },
                 "& .pro-inner-item:hover": {
-                    color: "#3da58a !important",
+                    color: "#ebff99 !important",
                 },
                 "& .pro-menu-item.active": {
-                    color: "#3da58a !important",
+                    color: "#a3cc00 !important",
                 },
             }}
         >
-            <ProSidebar collapsed={isCollapsed} >
+            <ProSidebar collapsed={isCollapsed}>
                 <Menu iconShape="square">
 
-                    <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-                        <Item
+                    {!mobileOpen && <MenuItem
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                        style={{
+                            margin: "10px 0 20px 0",
+                            color: colors.grey[100],
+                        }}
+                    >
+                        {!isCollapsed && (
+                            <Box
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                ml="15px"
+                            >
+                                <Typography variant="h5" color={colors.grey[100]} sx={{ mr: '5px' }}>
+                                    PORTFOLIO BATTLE
+                                </Typography>
+                                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                                    <MenuOutlinedIcon />
+                                </IconButton>
+                            </Box>
+                        )}
+                    </MenuItem>}
+                    {/* onClick={() => setMobileOpen(!mobileOpen)} */}
+                    {mobileOpen && <Box display="flex" alignItems="end" justifyContent="end">
+                        <IconButton onClick={() => setMobileOpen(false)} sx={{ mr: '20px', mt: '10px' }}>
+                            <CloseOutlinedIcon />
+                        </IconButton>
+                    </Box>}
+
+
+
+                    <Box paddingLeft={isCollapsed ? mobileOpen ? '0%' : undefined : "10%"} sx={{ textAlign: mobileOpen ? 'center' : 'left' }}>
+                        {/* <Item
                             title="Home"
                             to="/"
                             icon={<HomeOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                        />
+                        /> */}
 
-                        <Typography
+                        {isCollapsed ? <Typography
                             variant="h6"
                             color={colors.grey[300]}
-                            sx={{ m: "35px 0 5px 20px" }}
+                            sx={{ m: "55px 0 5px 20px" }}
                         >
-                            Portfolios
-                        </Typography>
+
+                        </Typography> :
+                            <Typography
+                                variant="h6"
+                                color={colors.grey[300]}
+                                sx={{ m: "55px 0 5px 20px" }}
+                            >
+                                Portfolios
+                            </Typography>}
                         <Item
                             title="Your portfolio"
                             to="/portfolio"
-                            icon={<PeopleOutlinedIcon />}
+                            icon={!mobileOpen && < InsertChartOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
+                            onReceiveSetMobileMenu={hangleSetMobileMenu}
                         />
                         <Item
                             title="All portfolios"
-                            to="/allportfolios"
-                            icon={<ContactsOutlinedIcon />}
+                            to="/"
+                            icon={!mobileOpen && <WorkspacesOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
+                            onReceiveSetMobileMenu={hangleSetMobileMenu}
                         />
-                        <Typography
+                        {isCollapsed ? <Typography
                             variant="h6"
                             color={colors.grey[300]}
-                            sx={{ m: "35px 0 5px 20px" }}
+                            sx={{ m: "55px 0 5px 20px" }}
                         >
-                            Results
-                        </Typography>
+                        </Typography> :
+                            <Typography
+                                variant="h6"
+                                color={colors.grey[300]}
+                                sx={{ m: "55px 0 5px 20px" }}
+                            >
+                                Results
+                            </Typography>}
                         <Item
                             title="Leaderboard"
                             to="/leaderboard"
-                            icon={<PersonOutlinedIcon />}
+                            icon={!mobileOpen && <EmojiEventsOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
+                            onReceiveSetMobileMenu={hangleSetMobileMenu}
                         />
                         <Item
                             title="Prizes"
-                            to="/prizes"
-                            icon={<CalendarTodayOutlinedIcon />}
+                            ext="https://aspis.finance/battle"
+                            icon={!mobileOpen && <MilitaryTechOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
+                            onReceiveSetMobileMenu={hangleSetMobileMenu}
                         />
 
-                        <Typography
+                        {isCollapsed ? <Typography
                             variant="h6"
                             color={colors.grey[300]}
-                            sx={{ m: "35px 0 5px 20px" }}
+                            sx={{ m: "55px 0 5px 20px" }}
                         >
-                            About
-                        </Typography>
-                        <Item
-                            title="FAQ"
-                            to="/faq"
-                            icon={<BarChartOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
+
+                        </Typography> :
+                            <Typography
+                                variant="h6"
+                                color={colors.grey[300]}
+                                sx={{ m: "55px 0 5px 20px" }}
+                            >
+                                About
+                            </Typography>}
                         <Item
                             title="About portfolio battle"
-                            to="/aboutbattle"
-                            icon={<PieChartOutlineOutlinedIcon />}
+                            // to="/aboutbattle"
+                            ext="https://aspis.finance/battle"
+                            icon={!mobileOpen && <InfoOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
+                            onReceiveSetMobileMenu={hangleSetMobileMenu}
                         />
                         <Item
                             title="About ASPIS"
-                            to="/aboutaspis"
-                            icon={<TimelineOutlinedIcon />}
+                            icon={!mobileOpen && <NewReleasesOutlinedIcon />}
+                            // to="/aboutaspis"
+                            ext="https://aspis.finance/"
                             selected={selected}
                             setSelected={setSelected}
+                            onReceiveSetMobileMenu={hangleSetMobileMenu}
                         />
                     </Box>
                 </Menu>
             </ProSidebar>
-        </Box>
+        </Box >
     );
 };
 

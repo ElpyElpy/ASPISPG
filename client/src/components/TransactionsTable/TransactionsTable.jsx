@@ -81,18 +81,18 @@ const TransactionsTable = ({ transactions, onReceiveSwapData }) => {
                         color: colors.greenAccent[400],
                     },
                     "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: colors.primary[600],
+                        background: `linear-gradient(135deg, ${colors.primary[600]} 30%, ${colors.primary[800]} 90%)`,
                         // borderBottom: "none",
                     },
                     "& .MuiDataGrid-columnSeparator": {
                         display: "none"
                     },
                     "& .MuiDataGrid-virtualScroller": {
-                        backgroundColor: colors.primary[400],
+                        background: `linear-gradient(135deg, ${colors.primary[500]} 30%, ${colors.primary[600]} 90%)`
                     },
                     "& .MuiDataGrid-footerContainer": {
                         // display: "none"
-                        backgroundColor: colors.primary[600],
+                        background: `linear-gradient(135deg, ${colors.primary[600]} 30%, ${colors.primary[800]} 90%)`,
                     },
                     "& .MuiTablePagination-root": {
                         display: "none"

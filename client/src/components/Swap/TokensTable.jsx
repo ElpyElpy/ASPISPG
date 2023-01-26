@@ -30,67 +30,11 @@ const TokensTable = ({ coins, onChooseToken }) => {
         { field: "svg_path", headerName: "svgpath", sortable: false, hide: true },
         { field: "CoinName", headerName: "Name", sortable: false, flex: 1, cellClassName: 'name-column--cell' },
         { field: "Symbol", headerName: "Token", sortable: false, cellClassName: 'symbol-column--cell' },
-        // { field: "quantity", headerName: "Value", sortable: false, width: 88, type: "number", headerAlign: "right", align: "right" },
-        // { field: "usdValue", headerName: "USD", sortable: false, width: 88, headerAlign: "right", align: "right" },
-        // { field: "share", headerName: "%", sortable: false, width: 88, headerAlign: "right", align: "right" },
-        // {
-        //     field: "buy", headerName: "", sortable: false, width: 70, headerAlign: "center", align: "center", renderCell: (params) => {
-        //         const onClick = (e) => {
-        //             e.stopPropagation();
-        //             const api: GridApi = params.api;
-        //             const thisRow: Record<string, GridCellValue> = {};
-
-        //             api
-        //                 .getAllColumns()
-        //                 .filter((c) => c.field !== "__check__" && !!c)
-        //                 .forEach(
-        //                     (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
-        //                 );
-        //             setBuy(true);
-        //             setTokenInfo(thisRow);
-        //             setOpen(true);
-
-        //         }
-        //         return <Button sx={{
-        //             backgroundColor: colors.greenAccent[600],
-        //             color: colors.grey[100],
-        //             fontSize: "10px",
-        //             fontWeight: "bold",
-        //             padding: "5px 0px",
-        //         }} onClick={onClick}> Buy</Button>;
-        //     }
-        // },
-        // {
-        //     field: "sell", headerName: "", sortable: false, width: 70, headerAlign: "center", align: "center", renderCell: (params) => {
-        //         const onClick = (e) => {
-        //             e.stopPropagation();
-        //             const api: GridApi = params.api;
-        //             const thisRow: Record<string, GridCellValue> = {};
-
-        //             api
-        //                 .getAllColumns()
-        //                 .filter((c) => c.field !== "__check__" && !!c)
-        //                 .forEach(
-        //                     (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
-        //                 );
-        //             setBuy(false);
-        //             setTokenInfo(thisRow);
-        //             setOpen(true);
-        //         }
-        //         return <Button sx={{
-        //             backgroundColor: colors.redAccent[600],
-        //             color: colors.grey[100],
-        //             fontSize: "10px",
-        //             fontWeight: "bold",
-        //             padding: "5px 0px",
-        //         }} onClick={onClick}> Sell</Button>;
-        //     }
-        // }
     ]
 
     return (
 
-        <Box m="0 0 0 0" height="100%" width="100%" marginTop="20px" sx={{
+        <Box m="0 0 0 0" height="50vh" width="100%" marginTop="20px" sx={{
             "& .MuiDataGrid-root": {
                 border: "none",
                 // borderColor: colors.greenAccent[400]
@@ -128,7 +72,7 @@ const TokensTable = ({ coins, onChooseToken }) => {
                         display: "none"
                     },
                     "& .MuiDataGrid-virtualScroller": {
-                        backgroundColor: colors.primary[600],
+                        background: 'transparent',
                         "&::-webkit-scrollbar": {
                             width: '4px'
                         },

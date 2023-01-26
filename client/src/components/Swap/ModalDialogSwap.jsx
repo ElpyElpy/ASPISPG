@@ -15,7 +15,8 @@ const ModalDialogSwap = ({ open = false, handleClose, buy = false, tokenInfo, co
         <Dialog open={open} onClose={handleClose} sx={{
             "& .MuiPaper-root": {
                 borderRadius: "30px"
-            }
+            },
+            backgroundColor: "rgba(28, 29, 39, 0.9)"
         }}>
             <FormSwap handleClose={handleClose} buy={buy} tokenInfo={tokenInfo} coins={coins} />
         </Dialog>

@@ -13,6 +13,7 @@ const ModalDialogTokens = ({ openTokensModal = false, handleCloseTokensModal, on
     const [query, setQuery] = useState("");
     const [selectedToken, setSelectedToken] = useState(null);
     const [closeModal, setCloseModal] = useState(false);
+    const [width, setWidth] = useState(window.innerWidth);
 
     const handleTokenChoose = (tokenData) => {
         setSelectedToken(tokenData);
@@ -22,6 +23,7 @@ const ModalDialogTokens = ({ openTokensModal = false, handleCloseTokensModal, on
 
     useEffect(() => {
         onChooseParentToken(selectedToken);
+        setWidth(window.innerWidth);
     })
 
 
@@ -29,19 +31,17 @@ const ModalDialogTokens = ({ openTokensModal = false, handleCloseTokensModal, on
         <Dialog open={openTokensModal} onClose={handleCloseTokensModal} sx={{
             "& .MuiPaper-root": {
                 borderRadius: "30px"
-            }
+            },
+            backgroundColor: "rgba(28, 29, 39, 0.9)"
         }}>
-            <Box
-                width="32rem"
-                padding="2rem 1rem 2rem 1rem"
-                display="flex"
+            <Box display="flex"
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
-                borderRadius='30px'
-                backgroundColor={colors.primary[600]}
-                height="80vh"
-            >
+                padding="2rem 2rem 2rem 2rem"
+                width={width <= 500 ? "320px" : "400px"}
+                height="70vh"
+                sx={{ background: `linear-gradient(135deg, ${colors.primary[600]} 30%, ${colors.primary[800]} 90%)` }}>
                 <Typography
                     variant="h3"
                     color={colors.grey[100]}
@@ -58,18 +58,16 @@ const ModalDialogTokens = ({ openTokensModal = false, handleCloseTokensModal, on
                                 </InputAdornment>
                             ),
                         }}
-                        sx={{ width: "30rem" }}
+                        sx={{
+                            width: width <= 500 ? "260px" : "340px"
+                        }}
                         onChange={e => setQuery(e.target.value.toLocaleLowerCase())}
                     />
                 </Box>
-                <Divider variant="middle" sx={{ width: "30rem", marginTop: "30px" }} />
-                {/* <ul className="list">
-                    {tokensArr.filter(token => token.CoinName.toLowerCase().includes(query)).map(token => (
-                        <li key={token.Id} className="listItem">{token.Symbol}</li>
-                    ))}
-                </ul> */}
+                <Divider variant="middle" sx={{ width: "100%", marginTop: "30px" }} />
                 {(tokensArr !== null) && (tokensArr !== undefined) && <TokensTable onChooseToken={handleTokenChoose} coins={tokensArr.filter(token => token.CoinName.toLowerCase().includes(query) || token.Symbol.toLowerCase().includes(query))} />}
             </Box>
+
 
         </Dialog>
     );

@@ -1,4 +1,4 @@
-import { Box, CircularProgress, IconButton, Typography, useTheme, Grid } from "@mui/material";
+import { Box, IconButton, useTheme, Grid } from "@mui/material";
 import PortfolioHeader from "../../components/PortfolioHeader";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
@@ -8,19 +8,19 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SignalCellularAltOutlinedIcon from '@mui/icons-material/SignalCellularAltOutlined';
 import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
-import PortfolioTable from "../../components/PortfolioTable/PortfolioTable";
+import SomeonePortfolioTable from "../../components/PortfolioTable/SomeonePortfolioTable";
 import LineChart from "../../components/LineChart/LineChart"
 import { useEffect, useState } from "react";
-import fetchPortfolioData from "../../services/fetchPortfolioData";
 import TransactionsTable from "../../components/TransactionsTable/TransactionsTable";
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
-import { color } from "@mui/system";
+import { useNavigate, useLocation } from 'react-router-dom';
+import fetchSomeonePortfolioData from "../../services/fetchSomeonePortfolioData";
 
 
 
 
-const Portfolio = ({ isCollapsed }) => {
+
+const PersonalPortfolio = ({ navigation, isCollapsed }) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -32,38 +32,33 @@ const Portfolio = ({ isCollapsed }) => {
     const [rank, setRank] = useState(null);
     const [gotToken, setGotToken] = useState(false);
     const [transactions, setTransactions] = useState(null);
+    const [userId, setUserId] = useState(null);
     const [historicalData, setHistoricalData] = useState(null);
     const [chartPeriod, setChartPeriod] = useState('minute');
     const [width, setWidth] = useState(window.innerWidth);
 
-    const navigate = useNavigate();
+    const location = useLocation();
+
 
     useEffect(() => {
+        setUserId(location.state.id);
         setWidth(window.innerWidth);
-        if (Cookies.get('hasPortfolio') === "false") {
-            navigate('/createportfolio');
-            return
-        }
-
-
         async function getCoins() {
-            const data = await fetchPortfolioData(chartPeriod);
+            const data = await fetchSomeonePortfolioData(userId, chartPeriod);
             setHistoricalData(data.historicalPortfolioValue);
             setCoins(data.portfolio);
             setAum(data.aum);
-            setRank(`${data.rank} place`);
             setChange(data.changeTotal);
-            // sort data.transactions by date from newest to oldest
-            data.transactions.sort((a, b) => {
-                return new Date(b.date) - new Date(a.date);
-            })
+            setRank(`${data.rank} place`);
             setTransactions(data.transactions);
-
             setPortfolioName(data.portfolioData.portfolio_name);
             setImageUrl(data.icon);
+
         }
-        getCoins();
-    }, [gotToken, chartPeriod]);
+        if (userId) {
+            getCoins();
+        }
+    }, [userId, chartPeriod])
 
     const handleChartPeriod = (period) => {
         setChartPeriod(period);
@@ -88,12 +83,13 @@ const Portfolio = ({ isCollapsed }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+                    {/* ROW 1 - PORTFOLIO*/}
                     <Box
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        borderRadius="5px"
                         height={width <= 500 ? "30vh" : '40vh'}
+                        borderRadius="5px"
                         border="solid"
                         borderwidth="1px"
                         borderColor={colors.grey[600]}
@@ -115,12 +111,13 @@ const Portfolio = ({ isCollapsed }) => {
                             background: `linear-gradient(135deg, ${colors.primary[500]} 40%, ${colors.primary[600]} 90%)`
                         }}
                     >
-                        {(coins !== null) && (coins !== undefined) ? <PortfolioTable coins={coins} onReceiveSwapData={handleSwapData} isCollapsed={isCollapsed} /> : <CircularProgress sx={{ color: colors.grey[500] }} />}
+                        {(coins !== null) && (coins !== undefined) && <SomeonePortfolioTable coins={coins} isCollapsed={isCollapsed} />}
                     </Box>
                 </Grid>
-
+                {/* ROW 2 - ACHIEVEMENTS*/}
                 <Grid item xs={12} sm={6} md={6} lg={3} xl={3}>
                     <Box
+
                         height='11vh'
                         display="flex"
                         alignItems="center"
@@ -142,7 +139,6 @@ const Portfolio = ({ isCollapsed }) => {
                         />
                     </Box>
                 </Grid>
-
                 <Grid item xs={12} sm={6} md={6} lg={3} xl={3}>
                     <Box
                         height='11vh'
@@ -212,7 +208,7 @@ const Portfolio = ({ isCollapsed }) => {
                         />
                     </Box>
                 </Grid>
-
+                {/* ROW 4 - TRANSACTIONS */}
                 <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                     <Box
                         borderRadius="5px"
@@ -220,12 +216,13 @@ const Portfolio = ({ isCollapsed }) => {
                         height={width <= 500 ? "30vh" : '40vh'}
                     >
                         <Header title={"Transactions"} subtitle={"History"} width={width} />
-                        {(transactions !== null) && (transactions !== undefined) ? <TransactionsTable transactions={transactions} onReceiveSwapData={handleSwapData} /> : <Box display="flex" alignItems="center" justifyContent="center"><CircularProgress sx={{ color: colors.grey[500] }} /></Box>}
+                        {(transactions !== null) && (transactions !== undefined) && <TransactionsTable transactions={transactions} onReceiveSwapData={handleSwapData} />}
                     </Box>
                 </Grid>
+
             </Grid>
         </Box>
     )
 }
 
-export default Portfolio;
+export default PersonalPortfolio;

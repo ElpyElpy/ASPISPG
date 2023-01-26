@@ -8,6 +8,7 @@ import Sidebar from './scenes/global/Sidebar';
 import Footer from './scenes/global/Footer';
 import Home from './scenes/Home/home';
 import Portfolio from './scenes/Portfolio/portfolio';
+import PersonalPortfolio from './scenes/Portfolio/PersonalPortfolio';
 import AllPortfolios from './scenes/AllPortfolios/allportfolios';
 import ModalDialog from './components/Authorization/ModalDialog';
 // import Transactions from './scenes/transactions';
@@ -18,6 +19,9 @@ import ModalDialog from './components/Authorization/ModalDialog';
 // import Aboutaspis from './scenes/aboutaspis';
 import apiPath from './apiPath';
 import PrivateRoute from './components/PrivateRoute';
+import CreatePortfolio from './scenes/CreatePortfolio/CreatePortfolio';
+import LeaderBoard from './scenes/LeaderBoard/LeaderBoard';
+
 
 
 
@@ -26,24 +30,36 @@ function App() {
 
   const [theme, colorMode] = useMode();
   const [open, setOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(null);
+  const [openMobileMenu, setOpenMobileMenu] = useState(false);
 
   const handleClose = () => {
     setOpen(false)
   }
 
+  const handleIsCollapsed = (collapseStatus) => {
+    setIsCollapsed(collapseStatus);
+  }
+
+  const handleOpenMobileMenu = (openMenu) => {
+    setOpenMobileMenu(openMenu);
+  }
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className='app'>
-          <Sidebar />
+          <Sidebar receiveCollapsed={handleIsCollapsed} openMobileMenu={openMobileMenu} />
           <main className='content'>
-            <Topbar />
+            <Topbar onReceiveOpenMobileMenu={handleOpenMobileMenu} />
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/portfolio" element={<PrivateRoute TargetComponent={<Portfolio />} />} />
-              <Route path="/allportfolios" element={<PrivateRoute TargetComponent={<AllPortfolios />} />} />
+              <Route path="/" element={<AllPortfolios />} />
+              <Route path="/portfolio" element={<PrivateRoute TargetComponent={<Portfolio isCollapsed={isCollapsed} />} />} />
+              {/* <Route path="/allportfolios" element={<AllPortfolios />} /> */}
+              <Route path="/createportfolio" element={<CreatePortfolio />} />
+              <Route path="/allportfolios/personalportfolio" element={<PersonalPortfolio isCollapsed={isCollapsed} />} />
+              <Route path="/leaderboard" element={<LeaderBoard />} />
               {/* <Route path='/allportfolios' element={<AllPortfolios />} /> */}
               {/* <Route path="/transactions" element={<Transactions />} /> */}
               {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}

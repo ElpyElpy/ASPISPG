@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
 
 
 
@@ -26,6 +27,7 @@ const Form = ({ handleClose }) => {
     const [errorEmailText, setErrorEmailText] = useState("");
     const [errorUserNameText, setErrorUserNameText] = useState("");
     const [errorPasswordText, setErrorPasswordText] = useState("");
+    const [width, setWidth] = useState(window.innerWidth);
 
     const navigate = useNavigate();
 
@@ -39,7 +41,7 @@ const Form = ({ handleClose }) => {
         if (password.length < 8) {
             setPasswordError(true);
             setErrorPasswordText("Password to short...");
-        } else if (!isLogin && userName.length > 10) {
+        } else if (!isLogin && userName.length > 16) {
             setUserNameError(true);
             setErrorUserNameText("Username too long...");
         } else {
@@ -131,6 +133,9 @@ const Form = ({ handleClose }) => {
         setIsLogin(!isLogin)
     }
 
+    useEffect(() => {
+        setWidth(window.innerWidth);
+    })
 
     return (
         <form onSubmit={handleSubmit} style={{
@@ -138,15 +143,16 @@ const Form = ({ handleClose }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            padding: "2rem 5rem 3rem 5rem",
+            padding: width <= 500 ? "2rem 2rem 2rem 2rem" : "2rem 5rem 3rem 5rem",
             border: "solid",
-            borderWidth: "2px",
-            borderColor: colors.greenAccent[400],
+            borderWidth: "1px",
+            borderColor: `linear-gradient(135deg, ${colors.greenAccent[400]} 30%, ${colors.greenAccent[500]} 90%)`,
             borderRadius: '50px',
-            backgroundColor: colors.primary[400]
+            // backgroundColor: colors.primary[600]
+            background: `linear-gradient(135deg, ${colors.primary[500]} 30%, ${colors.primary[900]} 90%)`
         }}>
             {!isLogin && <Typography
-                variant="h2"
+                variant={width <= 500 ? "h4" : "h2"}
                 color={colors.grey[100]}
                 fontWeight="bold"
             >
@@ -154,7 +160,7 @@ const Form = ({ handleClose }) => {
             </Typography>}
 
             {isLogin && <Typography
-                variant="h2"
+                variant={width <= 500 ? "h4" : "h2"}
                 color={colors.grey[100]}
                 fontWeight="bold"
             >
@@ -176,29 +182,47 @@ const Form = ({ handleClose }) => {
                     Don't have an account? <Link href="#" color="secondary" onClick={handleLogin}>Sign up</Link>
                 </Typography>}
             </Box>
-            {!isLogin && <TextField error={userNameError} helperText={errorUserNameText} label="username (max 10 characters)" variant="outlined" maxLength={10} required sx={{
+            {!isLogin && <TextField error={userNameError} helperText={errorUserNameText} label="username (max 16 characters)" variant="outlined" maxLength={16} required sx={{
                 margin: "1rem",
-                width: "100%"
-            }} value={userName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserName(e.target.value)} />}
+                width: "100%",
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: colors.grey[200]
+                },
+                "& .MuiFormLabel-root.Mui-focused": {
+                    color: colors.grey[200]
+                }
+            }} value={userName} onChange={(e) => setUserName(e.target.value)} />}
             <TextField error={emailError} helperText={errorEmailText} label="e-mail" type="email" variant="outlined" required sx={{
                 margin: "1rem",
                 width: "100%",
-            }} value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: colors.grey[200]
+                },
+                "& .MuiFormLabel-root.Mui-focused": {
+                    color: colors.grey[200]
+                }
+            }} value={email} onChange={(e) => setEmail(e.target.value)} />
             <TextField error={passwordError} label="password (min 8 characters)" helperText={errorPasswordText} type="password" variant="outlined" minLength={8} required sx={{
                 margin: "1rem",
-                width: "100%"
-            }} value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
+                width: "100%",
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: colors.grey[200]
+                },
+                "& .MuiFormLabel-root.Mui-focused": {
+                    color: colors.grey[200]
+                }
+            }} value={password} onChange={(e) => setPassword(e.target.value)} />
             <div>
-                {!isLogin && <Button variant="contained" type="submit" sx={{ width: "300px", marginTop: "10px", backgroundColor: colors.greenAccent[500] }}>Sign up</Button>}
-                {isLogin && <Button variant="contained" type="submit" sx={{ width: "300px", marginTop: "10px", backgroundColor: colors.greenAccent[500] }}>Log in</Button>}
+                {!isLogin && <Button variant="contained" type="submit" sx={{ width: width <= 500 ? "260px" : "300px", marginTop: "10px", backgroundColor: colors.greenAccent[600] }}>Sign up</Button>}
+                {isLogin && <Button variant="contained" type="submit" sx={{ width: width <= 500 ? "260px" : "300px", marginTop: "10px", backgroundColor: colors.greenAccent[600] }}>Log in</Button>}
             </div>
             <div>
-                {!isLogin && <Button variant="contained" color="primary" sx={{ width: "300px", marginTop: "10px", backgroundColor: colors.blueAccent[700] }} startIcon={<GoogleIcon />}>Sign up with Google</Button>}
-                {isLogin && <Button variant="contained" color="primary" sx={{ width: "300px", marginTop: "10px", backgroundColor: colors.blueAccent[700] }} startIcon={<GoogleIcon />}>Log in with Google</Button>}
+                {!isLogin && <Button variant="contained" color="primary" sx={{ width: width <= 500 ? "260px" : "300px", marginTop: "10px", backgroundColor: colors.blueAccent[700] }} startIcon={<GoogleIcon />}>Sign up with Google</Button>}
+                {isLogin && <Button variant="contained" color="primary" sx={{ width: width <= 500 ? "260px" : "300px", marginTop: "10px", backgroundColor: colors.blueAccent[700] }} startIcon={<GoogleIcon />}>Log in with Google</Button>}
             </div>
             {!isLogin && <Box maxWidth="300px" marginTop="15px">
                 <Typography
-                    variant="h7"
+                    variant="body2"
                     color={colors.grey[100]}
                 >
                     By registering, you agree to <Link href="#" color="secondary">Terms of Service</Link> and <Link href="#" color="secondary">Privacy Policy</Link>.

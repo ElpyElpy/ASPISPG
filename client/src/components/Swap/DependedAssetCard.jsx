@@ -9,7 +9,7 @@ import ModalDialogTokens from "./ModalDialogTokens";
 
 
 
-const DependedAssetCard = ({ buy, onSelectToken, onSelectTokenName, onSelectQuantity, onSelectPrice, dependedTokenQuant, unavailableAssetDep, coins }) => {
+const DependedAssetCard = ({ buy, onSelectToken, onSelectTokenName, onSelectQuantity, onSelectPrice, dependedTokenQuant, unavailableAssetDep, coins, width }) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -77,27 +77,44 @@ const DependedAssetCard = ({ buy, onSelectToken, onSelectTokenName, onSelectQuan
         setQuantity(currentChoosenTokenValue)
     }
 
+    const formatInput = (value) => {
+        if (value === "") {
+            return "";
+        } else {
+            var parts = value.split(".");
+            var thousands = /\B(?=(\d{3})+(?!\d))/g;
+            if (parts.length > 1 && parts[1].length !== '') {
+                var numberPart = parts[0];
+                var decimalPart = parts[1];
+
+                return numberPart.replace(thousands, ",") + "." + decimalPart;
+            } else {
+                return value.replace(thousands, ",");
+            }
+        }
+    }
+
 
     return (
         <Box width="100%" marginBottom="10px" marginTop="10px" marginLeft="50px" marginRight="50px" backgroundColor={colors.primary[400]} borderRadius="20px">
             <Box display="flex" marginTop="10px">
-                <Grid container direction="row" alignItems="center" justifyContent="space-between" p="0px 20px 10px 5px">
+                <Grid container direction="row" alignItems="center" justifyContent="space-between" p={width <= 500 ? "0px 20px 0px 5px" : "0px 20px 10px 5px"}>
                     <Typography
-                        variant="h6"
+                        variant={width <= 500 ? "subtitle2" : "h6"}
                         sx={{ color: colors.grey[300], marginLeft: "10px" }}
                     >
                         You {buy ? "Buy" : 'Sell'}
                     </Typography>
                     {!buy && <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         {(unavailableAssetDep || ((isNaN(dependedTokenQuant) ? 0 : dependedTokenQuant) > currentChoosenTokenValue)) && !buy && <Typography
-                            variant="h6"
+                            variant={width <= 500 ? "subtitle2" : "h6"}
                             sx={{ color: colors.redAccent[500], marginLeft: "10px" }}
                         >
                             Insufficient balance
                         </Typography>}
 
                         <Button sx={{
-                            backgroundColor: colors.primary[500], color: colors.grey[100], fontSize: "10px", borderRadius: '15px', borderColor: colors.grey[100], marginLeft: '10px', padding: '8px 15px 7px 15px',
+                            backgroundColor: colors.primary[500], color: colors.grey[100], fontSize: width <= 500 ? "8px" : "10px", borderRadius: '15px', borderColor: colors.grey[100], marginLeft: '10px', padding: width <= 500 ? '6px 12px 5px 12px' : '8px 15px 7px 15px',
                             '&:hover': {
                                 backgroundColor: colors.primary[600],
                             }
@@ -106,8 +123,8 @@ const DependedAssetCard = ({ buy, onSelectToken, onSelectTokenName, onSelectQuan
                 </Grid>
             </Box>
             <Grid container direction="row" alignItems="center" justifyContent="space-between" p="0 10px 0 10px" >
-                <Button sx={{ color: colors.grey[100], fontSize: "26px" }} startIcon={<TokenIcon svgpath={tokenFromParent ? tokenFromParent.svg_path : tokenIcon} />} endIcon={<ArrowDropDownIcon />} onClick={handleOpen}>{tokenFromParent ? tokenFromParent.Symbol : tokenTicker}</Button>
-                <TextField disabled value={isNaN(dependedTokenQuant) ? 0 : dependedTokenQuant.toFixed(4)} inputProps={{ min: 0, style: { textAlign: 'end', fontSize: '26px' } }}   // the change is here
+                <Button sx={{ color: colors.grey[100], fontSize: width <= 500 ? "20px" : "26px" }} startIcon={<TokenIcon svgpath={tokenFromParent ? tokenFromParent.svg_path : tokenIcon} />} endIcon={<ArrowDropDownIcon />} onClick={handleOpen}>{tokenFromParent ? tokenFromParent.Symbol : tokenTicker}</Button>
+                <TextField disabled value={isNaN(dependedTokenQuant) ? 0 : formatInput(dependedTokenQuant.toFixed(4))} inputProps={{ min: 0, style: { textAlign: 'end', fontSize: width <= 500 ? "20px" : "26px" } }}   // the change is here
                     sx={{
                         width: '50%',
                         '& label.Mui-focused': {
@@ -142,13 +159,13 @@ const DependedAssetCard = ({ buy, onSelectToken, onSelectTokenName, onSelectQuan
             <Box display="flex">
                 <Grid container direction="row" alignItems="center" justifyContent="space-between" p="0px 20px 10px 5px">
                     <Typography
-                        variant="h6"
+                        variant={width <= 500 ? "subtitle2" : "h6"}
                         sx={{ color: colors.grey[300], marginLeft: "10px" }}
                     >
                         {tokenFromParent ? tokenFromParent.CoinName : tokenName}
                     </Typography>
                     <Typography
-                        variant="h6"
+                        variant={width <= 500 ? "subtitle2" : "h6"}
                         sx={{ color: colors.grey[300], marginLeft: "10px" }}
                     >
 

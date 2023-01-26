@@ -17,7 +17,7 @@ const HomeCardObserve = () => {
 
     return (
 
-        <Card sx={{ backgroundColor: colors.primary[500], border: "solid", borderRadius: "14px" }}>
+        <Card sx={{ background: `linear-gradient(135deg, ${colors.primary[400]} 30%, ${colors.primary[500]} 90%)`, border: "solid", borderRadius: "14px" }}>
             <CardMedia
                 component="img"
                 sx={{ height: 350, objectFit: "-moz-initial" }}
