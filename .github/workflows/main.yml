@@ -19,17 +19,9 @@ jobs:
         
       - name: Get timestamp
         uses: gerred/actions/current-time@main
-        id: current-time
-
-      - name: Run string replace
-        uses: frabert/replace-string-action@main
-        id: format-time
-        with:
-          pattern: '[:\.]+'
-          string: "${{ steps.current-time.outputs.time }}"
-          replace-with: '-'
-          flags: 'g'
-
+        id: timestamp
+        
+      
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v14
         with:
@@ -37,6 +29,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: portfolio battle
           environment_name: Portfoliobattle-env
-          version_label: "portfolio-battle-deployment-${{ steps.format-time.outputs.replaced }}"
+          version_label: "portfolio-battle-deployment-${{ steps.timestamp.outputs.time }}"
           region: ey-central-1
           deployment_package: deploy.zip
