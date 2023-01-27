@@ -25,5 +25,5 @@ jobs:
           application_name: portfolio battle
           environment_name: Portfoliobattle-env
           version_label: "portfolio-battle-deployment-${{ env.SHA }}"
-          region: ey-central-1
+          region: eu-central-1
           deployment_package: deploy.zip
