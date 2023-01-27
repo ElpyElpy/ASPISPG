@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@main
       
       - name: Change to api directory
-      - run: cd api
+        run: cd api
       
       # Zip Dockerfile for upload
       - name: Generate Deployment Package
