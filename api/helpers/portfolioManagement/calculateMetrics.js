@@ -8,7 +8,7 @@ const calculateAum = (arrayOfTokens) => {
 }
 
 const calculateChange = (aum) => {
-    const INITIAL_USER_AUM = process.env.INITIAL_USER_AUM;
+    const INITIAL_USER_AUM = 100000;
     const changeTotal = (aum / INITIAL_USER_AUM) - 1;
     return changeTotal;
 }

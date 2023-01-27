@@ -38,7 +38,8 @@ app.use("/api/auth", authRoute);
 app.use("/api/portfolio", portfolioRoute);
 // app.use("/api/test", testRoute);
 
+const port = process.env.port || 5000; // 8081 for production
 
-app.listen(5000, () => {
+app.listen(port, () => {
     console.log('Backend server is running...');
 })

@@ -13,6 +13,10 @@ router.get('/closed/test', async (req, res) => {
 router.get('/closed/logout', logoutController.logout);
 router.get('/closed/verificate', verificationController.verificate)
 
+router.get('/test', async (req, res) => {
+    res.status(200).send(`open route activated!`);
+})
+
 
 
 module.exports = router
